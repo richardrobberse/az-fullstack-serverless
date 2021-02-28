@@ -15,15 +15,22 @@
     "watch": "tsc -w",
     "prestart": "npm run build",
     "start": "func start",
-    "test": "echo \"No tests yet...\""
+    "test": "echo \"No tests yet...\"",
+    "postbuild": "cp ./graphql/schema.graphql ./dist/graphql/schema.graphql",
+    "generate": "graphql-codegen --config codegen.yml"
   },
   "dependencies": {
     "@azure/cosmos": "^3.9.5",
     "apollo-server-azure-functions": "^2.19.2",
-    "graphql": "^15.5.0"
+    "graphql": "^15.5.0",
+    "uuid": "^8.3.2"
   },
   "devDependencies": {
     "@azure/functions": "^1.0.2-beta2",
+    "@graphql-codegen/cli": "1.20.1",
+    "@graphql-codegen/typescript": "1.21.0",
+    "@graphql-codegen/typescript-operations": "1.17.14",
+    "@types/node": "^14.14.28",
     "typescript": "^3.3.3"
   }
 }

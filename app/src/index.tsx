@@ -5,6 +5,8 @@ import App from './App'
 import { store } from 'store'
 import { Provider } from 'react-redux'
 import * as serviceWorker from './serviceWorker'
+import { ApolloProvider } from '@apollo/client'
+import apolloClient from 'lib/apolloClient'
 
 class ErrorBoundary extends React.Component {
   state = { error: null as Error | null, info: null as ErrorInfo | null }
@@ -16,7 +18,7 @@ class ErrorBoundary extends React.Component {
   render() {
     if (this.state.error) {
       // Render fallback UI
-      return <h1>Something went wrong.</h1>
+      return <h1>Oops! Something went wrong.</h1>
     }
     return this.props.children
   }
@@ -26,7 +28,9 @@ const render = Component => {
   ReactDOM.render(
     <ErrorBoundary>
       <Provider store={store}>
-        <Component />
+        <ApolloProvider client={apolloClient}>
+          <Component />
+        </ApolloProvider>
       </Provider>
     </ErrorBoundary>,
     document.getElementById('root')
