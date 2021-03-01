@@ -1,5 +1,9 @@
-import upsertTodo from './upsertTodo'
+import createTodo from './createTodo'
+import completeTodo from './completeTodo'
+import deleteTodo from './deleteTodo'
 
 export default {
-  upsertTodo,
+  createTodo,
+  completeTodo,
+  deleteTodo,
 }

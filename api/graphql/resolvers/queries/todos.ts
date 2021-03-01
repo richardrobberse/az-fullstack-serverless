@@ -1,24 +1,17 @@
+import { InMemoryDatabase } from '../../lib/inMemoryDatabase'
 import { Todo } from '../../models/todo'
 
+const sortFn = (a: Todo, b: Todo) => {
+  if (b.completed && !a.completed) return -1
+
+  if ((b.completed && a.completed) || (!a.completed && !b.completed)) {
+    return new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime()
+  }
+
+  return 0
+}
+
 export default async (_: object, {}, context: any): Promise<Array<Todo>> => {
-  const todos = new Array<Todo>()
-
-  todos.push(
-    {
-      id: '1',
-      title: 'Create todos resolver',
-      completed: true,
-      createdAt: new Date(2021, 2, 1, 19, 5).toISOString(),
-      updatedAt: new Date(2021, 2, 11, 20, 25).toISOString(),
-    },
-    {
-      id: '2',
-      title: 'Create upsertTodo mutation',
-      completed: true,
-      createdAt: new Date(2021, 2, 1, 19, 5).toISOString(),
-      updatedAt: new Date(2021, 2, 11, 20, 25).toISOString(),
-    }
-  )
-
-  return todos
+  const db = new InMemoryDatabase()
+  return db.getTodos().sort(sortFn)
 }
