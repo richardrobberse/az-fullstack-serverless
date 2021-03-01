@@ -1,12 +1,12 @@
 import React, { useCallback, useState } from 'react'
-import { TodoInput, useCreateTodoMutation } from 'graphql/generated/graphql'
+import { GetTodosDocument, TodoInput, useCreateTodoMutation } from 'graphql/generated/graphql'
 
 interface AddTodoProps {
   style?: React.CSSProperties
 }
 
 const AddTodo: React.FC<AddTodoProps> = ({ style = {} }) => {
-  const [upsertTodo, { loading: upsertTodoLoading, error: upsertTodoError }] = useCreateTodoMutation()
+  const [upsertTodo, { loading, error }] = useCreateTodoMutation()
   const [data, setData] = useState<TodoInput>({ title: '' })
 
   const handleSubmit = useCallback(
@@ -19,7 +19,7 @@ const AddTodo: React.FC<AddTodoProps> = ({ style = {} }) => {
             ...data,
           },
         },
-        refetchQueries: ['GetTodos'], // Can be optimized by using cache.modify instead.
+        refetchQueries: [{ query: GetTodosDocument }],
         awaitRefetchQueries: true,
       }).then(result => {
         !result.errors && setData({ title: '' })
@@ -44,7 +44,7 @@ const AddTodo: React.FC<AddTodoProps> = ({ style = {} }) => {
               }))
             }
           />
-          <input type="submit" value="Save" disabled={upsertTodoLoading} />
+          <input type="submit" value="Save" disabled={loading} />
         </div>
       </form>
     </div>

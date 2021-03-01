@@ -1,5 +1,11 @@
 import React, { useCallback } from 'react'
-import { Todo, useCompleteTodoMutation, useDeleteTodoMutation } from 'graphql/generated/graphql'
+import {
+  GetTodosDocument,
+  GetTodosQuery,
+  Todo,
+  useCompleteTodoMutation,
+  useDeleteTodoMutation,
+} from 'graphql/generated/graphql'
 
 interface TodoItemProps {
   style?: React.CSSProperties
@@ -16,7 +22,6 @@ const TodoItem: React.FC<TodoItemProps> = ({ style = {}, todo }) => {
         variables: {
           id,
         },
-        refetchQueries: ['GetTodos'],
       })
     },
     [completeTodo]
@@ -28,7 +33,20 @@ const TodoItem: React.FC<TodoItemProps> = ({ style = {}, todo }) => {
         variables: {
           id,
         },
-        refetchQueries: ['GetTodos'],
+        update: (cache, { data }) => {
+          const id = data?.deleteTodo.id
+          if (!id) return
+
+          const todosData = cache.readQuery<GetTodosQuery>({ query: GetTodosDocument })
+
+          id &&
+            cache.writeQuery({
+              query: GetTodosDocument,
+              data: {
+                todos: [...todosData!.todos!.filter(x => x.id !== id)],
+              },
+            })
+        },
       })
     },
     [deleteTodo]
